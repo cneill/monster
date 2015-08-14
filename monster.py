@@ -13,7 +13,6 @@ Options:
 """
 
 # import unittest
-import copy
 
 from docopt import docopt
 from selenium import webdriver
@@ -182,13 +181,10 @@ class XSSTest(MonsterTest):
 
 def main(args):
     ms = MonsterSpider('http://localhost:8081/test_site.html')
-    print ms.get_forms()
-    """
-    result = ms.spider()
-    ma = MonsterAttacker(result)
-    ma.go()
-    """
-
+    forms = ms.get_forms()
+    for form in forms:
+        print form.get_attribute('name')
+        print form.find_elements_by_tag_name('input')
 
 if __name__ == '__main__':
     args = docopt(__doc__, version='0.0')
