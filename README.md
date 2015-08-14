@@ -31,17 +31,15 @@
 
 ### Bootstrap Validator
 
-    - Replace "type" to "text"
-        - email
-        - url
-        - number
-    - Remove
-        - "required" attrib
-        - "data-match" attrib
-        - "data-minlength" attrib
-        - "data-remote" attrib
-        - "pattern" attrib
-    - "data-html" attrib = true = YEEEEEEEEEEEEEEE
-    - look for calls to (HTML element).validator()
-
-
+- Replace "type" to "text"
+    - email
+    - url
+    - number
+- Remove
+    - "required" attrib
+    - "data-match" attrib
+    - "data-minlength" attrib
+    - "data-remote" attrib
+    - "pattern" attrib
+- "data-html" attrib = true = YEEEEEEEEEEEEEEE
+- look for calls to (HTML element).validator()
