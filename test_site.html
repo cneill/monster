@@ -13,10 +13,20 @@ function getUrlVars() {
     return vars;
 }
 
-function derp() {
+var derp = function () {
     var elem = document.getElementById('derp');
     elem.maxLength = 5000;
 }
+
+var OMG = function () {
+    var f = document.createElement('form');
+    f.setAttribute('name', 'omgform');
+    var i = document.createElement('input');
+    i.setAttribute('type', 'text');
+    i.setAttribute('name', 'derp');
+    f.appendChild(i);
+    document.body.appendChild(f);
+};
 
 (function () {
     vars = getUrlVars();
@@ -29,10 +39,12 @@ function derp() {
 </head>
 
 <body>
-    <form action="" method="GET">
+    <form action="" method="GET" name="defaultform">
         <input type="text" id="derp" name="text" maxlength=1>
         <input type="submit" name="submit" value="go">
     </form>
     <button onclick="derp()">FIXIT</button>
+
+    <button onclick="OMG()">OMG</button>
 </body>
 </html>
