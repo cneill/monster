@@ -13,6 +13,7 @@ Options:
 """
 
 # import unittest
+import copy
 
 from docopt import docopt
 from selenium import webdriver
@@ -26,7 +27,7 @@ elem.{attr} = {val};
 class MonsterClient(object):
 
     def __init__(self, url):
-        self.driver = webdriver.FireFox()
+        self.driver = webdriver.Firefox()
         self.base_url = url
 
     def get(self, url):
@@ -70,21 +71,45 @@ class MonsterClient(object):
 class MonsterSpider(MonsterClient):
 
     def __init__(self, url):
-        # self.driver = webdriver.PhantomJS()
-        self.driver = webdriver.FireFox()
-        self.base_url = url
+        super(MonsterSpider, self).__init__(url)
+        self.get(self.base_url)
 
-    # HELPERS FOR GETTING HTML INFO #
-    def get_forms(self):
-        return self.driver.find_elements_by_tag_name('form')
+    def get_forms(self, forms=[], depth=0, max_depth=4):
+        if depth < max_depth:
+            forms.extend(self.driver.find_elements_by_tag_name('form'))
+            forms.extend(self.get_hard_forms(forms, depth=depth+1))
+            forms = list(set(forms))
+        return forms
+
+    def get_hard_forms(self, forms=None, depth=0, max_depth=4):
+        forms = []
+        curr_url = self.base_url
+
+        if depth < max_depth:
+            for button in self.get_buttons():
+                button.click()
+                if self.driver.current_url != curr_url:
+                    self.driver.back()
+                else:
+                    forms.extend(self.get_forms(forms, depth=depth+1))
+
+            for link in self.get_links():
+                link.click()
+                if self.driver.current_url != curr_url:
+                    self.driver.back()
+                else:
+                    forms.extend(self.get_forms(forms, depth=depth+1))
+
+            return list(set(forms))
+
+    def get_buttons(self):
+        return self.driver.find_elements_by_tag_name('button')
 
     def get_links(self):
         return self.driver.find_elements_by_tag_name('a')
 
     def get_form_inputs(self, form):
         return form.find_elements_by_tag_name('input')
-
-    # SPIDERING #
 
     def spider(self):
         self.get(self.base_url)
@@ -101,7 +126,10 @@ class MonsterSpider(MonsterClient):
 class MonsterAttacker(MonsterClient):
 
     def __init__(self, spider_log):
+        """
         self.driver = spider_log['driver']
+        """
+        super(MonsterAttacker, self)
         self.attacks = {
             'xss': XSSTest()
         }
@@ -154,9 +182,12 @@ class XSSTest(MonsterTest):
 
 def main(args):
     ms = MonsterSpider('http://localhost:8081/test_site.html')
+    print ms.get_forms()
+    """
     result = ms.spider()
     ma = MonsterAttacker(result)
     ma.go()
+    """
 
 
 if __name__ == '__main__':
