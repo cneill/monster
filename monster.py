@@ -36,7 +36,8 @@ elem.removeAttribute("{attr}");
 class MonsterClient(object):
 
     def __init__(self, url):
-        self.driver = webdriver.Firefox()
+        # self.driver = webdriver.Firefox()
+        self.driver = webdriver.PhantomJS()
         self.base_url = url
 
     def get(self, url):
